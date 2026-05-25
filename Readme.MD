@@ -1,59 +1,33 @@
-# Agrokratis - Voice-Based Agricultural Seed Distribution System
+# Agrokratis
+
+### Voice-Based Agricultural Seed Distribution System
 
 A comprehensive voice-based telephony system enabling rural Indian farmers to order government-subsidized seeds through simple phone calls in their native languages.
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [System Architecture](#system-architecture)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Project Structure](#project-structure)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
 ## Overview
 
-Agrokratis addresses the critical gap in agricultural service delivery by providing a voice-based interface that enables farmers to:
+Agrokratis addresses the critical gap in agricultural service delivery by providing a voice-based IVR interface that enables farmers to order government-subsidized seeds using any basic mobile phone — no internet, no smartphone, no literacy required.
 
-- Order subsidized seeds without traveling to government offices
-- Interact in their native language (Telugu, Hindi, Tamil, Malayalam, Kannada)
-- Use basic mobile phones without internet connectivity
-- Receive automated eligibility verification
-- Access real-time inventory information
-
-The system eliminates barriers faced by farmers with limited literacy, no smartphone access, or residing in remote locations.
+Farmers interact in their native language, complete an order in under 60 seconds, and government administrators monitor everything through a live React web dashboard.
 
 ---
 
 ## Features
 
-### Farmer-Facing Features
-
-- **Multi-language Support**: Five major Indian languages with voice prompts
-- **Dual Input System**: Accept both DTMF (keypad) and speech recognition
-- **Automated Eligibility Checking**: 30-day restriction enforcement
-- **Real-time Inventory**: Prevent out-of-stock orders
-- **Aadhaar Authentication**: Secure identity verification
-- **Simple Workflow**: Complete orders in approximately 60 seconds
-
-### Administrative Features
-
-- **Web Dashboard**: Monitor operations through React-based interface
-- **Seed Management**: Add, edit, delete seed inventory
-- **Order Tracking**: View all transactions with filtering options
-- **Ration Card Monitoring**: Visual status with color-coded availability
-- **Auto-refresh**: Dashboard updates every 10 seconds
-- **Real-time Sync**: Changes reflect across voice and web interfaces
+| Feature | Description |
+|---------|-------------|
+| Multi-language Support | Telugu, Hindi, Tamil, Malayalam, Kannada |
+| Dual Input System | DTMF keypad and speech recognition |
+| Aadhaar Authentication | Secure 12-digit identity verification |
+| Automated Eligibility | 30-day restriction enforcement per ration card |
+| Real-time Inventory | Prevents out-of-stock orders automatically |
+| Fast Workflow | Complete orders in approximately 60 seconds |
+| Admin Dashboard | React-based interface with auto-refresh every 10 seconds |
+| Seed Management | Full CRUD for seed inventory |
+| Order Tracking | All transactions with filtering and sorting |
+| Ration Card Monitor | Color-coded eligibility status view |
 
 ---
 
@@ -61,88 +35,86 @@ The system eliminates barriers faced by farmers with limited literacy, no smartp
 
 ### Backend
 
-- **Runtime**: Node.js 16+
-- **Framework**: Express 4.x
-- **Database**: Firebase Firestore (NoSQL)
-- **Voice Platform**: Twilio Voice API
-- **Authentication**: Firebase Admin SDK
+| Technology | Purpose |
+|------------|---------|
+| Node.js 16+ | Runtime environment |
+| Express 4.x | Web framework |
+| Firebase Firestore | NoSQL database |
+| Twilio Voice API | IVR and telephony |
+| Firebase Admin SDK | Authentication and database access |
 
 ### Frontend
 
-- **Library**: React 18
-- **Build Tool**: Vite
-- **HTTP Client**: Axios
-- **State Management**: React Hooks (useState, useEffect)
-
-### DevOps
-
-- **Development Server**: nodemon
-- **Local Tunneling**: ngrok
-- **Version Control**: Git
+| Technology | Purpose |
+|------------|---------|
+| React 18 | UI library |
+| Vite | Build tool and dev server |
+| Axios | HTTP client |
+| React Hooks | State management |
 
 ---
 
 ## System Architecture
 
-### Three-Tier Architecture
-
 ```
-┌─────────────────────┐
-│  Presentation Layer │
-│  - Twilio Voice     │
-│  - React Dashboard  │
-└──────────┬──────────┘
-           │
-┌──────────┴──────────┐
-│  Application Layer  │
-│  - Node.js/Express  │
-│  - Business Logic   │
-│  - Controllers      │
-└──────────┬──────────┘
-           │
-┌──────────┴──────────┐
-│    Data Layer       │
-│  - Firebase         │
-│  - Firestore DB     │
-└─────────────────────┘
++-------------------------+
+|    Presentation Layer   |
+|  Twilio Voice           |
+|  React Dashboard        |
++-------------------------+
+           |
++-------------------------+
+|   Application Layer     |
+|  Node.js / Express      |
+|  Controllers            |
+|  Business Logic         |
++-------------------------+
+           |
++-------------------------+
+|      Data Layer         |
+|  Firebase Firestore     |
++-------------------------+
 ```
 
 ### Database Collections
 
-**seeds**: Store seed inventory
-- id, name, nameLocal (object with translations), costPerKg, stock
+**seeds** — Seed inventory
 
-**orders**: Track completed transactions
-- id, date, seedName, amount, rationCard, aadhaar, language
+```
+id | name | nameLocal (te / hi / ta / ml / kn) | costPerKg | stock
+```
 
-**rationcards**: Manage eligibility
-- number, used (boolean), lastUsed (timestamp)
+**orders** — Transaction history
+
+```
+id | date | seedName | amount | rationCard | aadhaar | language
+```
+
+**rationcards** — Eligibility tracking
+
+```
+number | used (boolean) | lastUsed (timestamp)
+```
 
 ---
 
 ## Prerequisites
 
-### Required Software
-
-- Node.js (version 16 or higher)
-- npm (comes with Node.js)
+- Node.js v16 or higher
+- npm (bundled with Node.js)
 - Git
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-
-### Required Accounts
-
-- Firebase account (free tier sufficient)
-- Twilio account with phone number
-- ngrok account (for local development)
+- Firebase account (free tier is sufficient)
+- Twilio account with a voice-capable phone number
+- ngrok account (for local development tunneling)
 
 ---
 
 ## Installation
 
-### 1. Clone Repository
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/agrokratis.git
+git clone https://github.com/SpringMan-Sonic/agrokratis.git
 cd agrokratis
 ```
 
@@ -162,53 +134,40 @@ npm install
 
 ### 4. Firebase Setup
 
-1. Create Firebase project at console.firebase.google.com
-2. Enable Firestore Database
-3. Generate service account key:
-   - Project Settings > Service Accounts > Generate New Private Key
-4. Save JSON file as `backend/serviceAccountKey.json`
+1. Create a project at [console.firebase.google.com](https://console.firebase.google.com)
+2. Enable **Firestore Database**
+3. Go to Project Settings > Service Accounts > Generate New Private Key
+4. Save the downloaded JSON as `backend/serviceAccountKey.json`
 
-### 5. Create Firestore Collections
+### 5. Seed the Firestore Collections
 
-In Firebase Console > Firestore Database, create three collections:
+**seeds** — Example document
 
-**seeds** collection - Add sample documents:
-```
-Document ID: seed_001
+```json
 {
-  name: "Rice",
-  nameLocal: {
-    te: "Vadlu",
-    hi: "Chawal",
-    ta: "Arisi",
-    ml: "Ari",
-    kn: "Akki"
-  },
-  costPerKg: 50,
-  stock: 5000
+  "name": "Rice",
+  "nameLocal": { "te": "Vadlu", "hi": "Chawal", "ta": "Arisi", "ml": "Ari", "kn": "Akki" },
+  "costPerKg": 50,
+  "stock": 5000
 }
 ```
 
-**rationcards** collection - Add sample documents:
-```
-Document ID: RC0001
+**rationcards** — Add documents RC0001 through RC0010
+
+```json
 {
-  used: false,
-  lastUsed: null
+  "used": false,
+  "lastUsed": null
 }
 ```
 
-Repeat for RC0002 through RC0010.
-
-**orders** collection will auto-populate when farmers place orders.
+The **orders** collection auto-populates when farmers place orders.
 
 ---
 
 ## Configuration
 
-### Backend Environment Variables
-
-Create `backend/.env` file:
+### Backend — `backend/.env`
 
 ```env
 PORT=3001
@@ -217,141 +176,92 @@ TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=your_twilio_phone_number
 ```
 
-### Frontend Environment Variables
-
-Create `frontend/.env` file:
+### Frontend — `frontend/.env`
 
 ```env
 VITE_API_URL=http://localhost:3001/api
 ```
 
-### Twilio Configuration
+### Twilio Webhook Configuration
 
-1. Log in to Twilio Console
-2. Purchase a phone number (with voice capabilities)
-3. Configure phone number webhooks:
-   - Voice: `https://your-ngrok-url.ngrok-free.dev/api/voice` (HTTP POST)
-   - Status Callback: `https://your-ngrok-url.ngrok-free.dev/api/voice/hangup` (HTTP POST)
+| Event | URL | Method |
+|-------|-----|--------|
+| Voice | `https://your-ngrok-url/api/voice` | HTTP POST |
+| Status Callback | `https://your-ngrok-url/api/voice/hangup` | HTTP POST |
 
 ---
 
 ## Usage
 
-### Development Mode
-
-#### Start Backend Server
+### Start Development Servers
 
 ```bash
-cd backend
-npm run dev
-```
+# Terminal 1 — Backend (runs on http://localhost:3001)
+cd backend && npm run dev
 
-Server starts on http://localhost:3001
+# Terminal 2 — Frontend (runs on http://localhost:5173)
+cd frontend && npm run dev
 
-#### Start Frontend Development Server
-
-```bash
-cd frontend
-npm run dev
-```
-
-Frontend starts on http://localhost:5173
-
-#### Start ngrok Tunnel
-
-```bash
+# Terminal 3 — ngrok tunnel
 ngrok http 3001
 ```
 
-Copy the HTTPS URL (e.g., https://abc123.ngrok-free.dev) and update Twilio webhook configuration.
+### Farmer Workflow (Voice)
 
-### Using the System
+```
+Call Twilio number
+  └── Select language          (Press 1-5)
+        └── Enter ration card  (4 digits)
+              └── Select seed  (Press 1-3)
+                    └── Enter quantity   (in grams)
+                          └── Enter Aadhaar  (12 digits)
+                                └── Order confirmed
+```
 
-#### As a Farmer (Voice Interface)
+### Admin Dashboard
 
-1. Call the Twilio phone number
-2. Select language (press 1-5 on keypad)
-3. Enter 4-digit ration card number
-4. Select seed type (press 1-3)
-5. Enter quantity in grams
-6. Enter 12-digit Aadhaar number
-7. Receive confirmation
+Open `http://localhost:5173` and navigate between:
 
-#### As an Administrator (Web Dashboard)
-
-1. Open http://localhost:5173 in browser
-2. Navigate between tabs:
-   - **Seed Inventory**: Manage available seeds
-   - **Orders**: View completed transactions
-   - **Ration Cards**: Monitor eligibility status
+- **Seed Inventory** — Add, edit, and delete seeds
+- **Orders** — Browse all completed transactions
+- **Ration Cards** — Monitor eligibility with color-coded status
 
 ---
 
 ## API Documentation
 
-### Base URL
+**Base URL:** `http://localhost:3001/api`
 
-```
-http://localhost:3001/api
-```
+### Seeds
 
-### Seed Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/seeds` | Retrieve all seeds |
+| POST | `/seeds` | Create a seed |
+| PUT | `/seeds/:id` | Update a seed |
+| DELETE | `/seeds/:id` | Delete a seed |
 
-**GET /seeds**
-- Description: Retrieve all seeds
-- Response: Array of seed objects
+### Orders
 
-**POST /seeds**
-- Description: Create new seed
-- Body: `{ name, nameLocal, costPerKg, stock }`
-- Response: Created seed object
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/orders` | Retrieve all orders, sorted by date DESC |
+| POST | `/orders` | Create an order (internal use) |
 
-**PUT /seeds/:id**
-- Description: Update seed
-- Body: `{ stock }` (or other fields)
-- Response: Updated seed object
+### Ration Cards
 
-**DELETE /seeds/:id**
-- Description: Delete seed
-- Response: Success confirmation
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/rationcards` | Retrieve all cards with computed status |
+| GET | `/rationcards/:number` | Check single card eligibility |
 
-### Order Endpoints
+### Voice Webhooks (Twilio)
 
-**GET /orders**
-- Description: Retrieve all orders
-- Response: Array of order objects (sorted by date DESC)
-
-**POST /orders**
-- Description: Create new order (internal use)
-- Body: `{ seedName, amount, rationCard, aadhaar, language }`
-- Response: Created order object
-
-### Ration Card Endpoints
-
-**GET /rationcards**
-- Description: Retrieve all ration cards with status
-- Response: Array of card objects with computed status
-
-**GET /rationcards/:number**
-- Description: Check single card eligibility
-- Response: Card object with canOrder, daysRemaining
-
-### Voice Endpoints (Twilio Webhooks)
-
-**POST /api/voice**
-- Description: Handle incoming calls
-- Body: Twilio webhook parameters
-- Response: TwiML XML
-
-**POST /api/voice/gather**
-- Description: Process user input
-- Body: Twilio webhook with Digits or SpeechResult
-- Response: TwiML XML
-
-**POST /api/voice/hangup**
-- Description: Clean up session on call end
-- Body: Twilio webhook parameters
-- Response: 200 OK
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/voice` | Handle incoming call, returns TwiML |
+| POST | `/api/voice/gather` | Process DTMF or speech input |
+| POST | `/api/voice/hangup` | Clean up session on call end |
 
 ---
 
@@ -359,7 +269,6 @@ http://localhost:3001/api
 
 ```
 agrokratis/
-│
 ├── backend/
 │   ├── src/
 │   │   ├── config/
@@ -391,8 +300,7 @@ agrokratis/
 │   │   └── app.js
 │   ├── server.js
 │   ├── package.json
-│   ├── .env
-│   └── serviceAccountKey.json
+│   └── .env
 │
 └── frontend/
     ├── src/
@@ -420,158 +328,105 @@ agrokratis/
 
 ---
 
-## Testing
-
-### Manual Testing
-
-#### Voice Workflow Test
-
-1. Call Twilio number from mobile phone
-2. Follow voice prompts through complete workflow
-3. Verify order appears in admin dashboard
-4. Check ration card status changes from green to red
-
-#### Dashboard Functionality Test
-
-1. Open http://localhost:5173
-2. Test seed CRUD operations
-3. Verify order display and sorting
-4. Check ration card status colors
-5. Confirm auto-refresh works (10-second interval)
-
----
-
 ## Performance Benchmarks
 
 Based on testing with 45 simulated calls:
 
-- **Voice Interaction Success Rate**: 88%
-- **DTMF Input Accuracy**: 100%
-- **Speech Recognition Accuracy**: 70-92%
-- **Average Order Completion Time**: 66 seconds
-- **Database Read Operations**: 58-95ms average
-- **Database Write Operations**: 105-135ms average
-- **Complete Transaction**: 520ms average
-- **Dashboard Load Time**: 1.85 seconds
-- **Language Comprehension**: 85-92% across all languages
+| Metric | Result |
+|--------|--------|
+| Voice Interaction Success Rate | 88% |
+| DTMF Input Accuracy | 100% |
+| Speech Recognition Accuracy | 70-92% |
+| Average Order Completion Time | ~66 seconds |
+| Database Read Operations | 58-95ms average |
+| Database Write Operations | 105-135ms average |
+| Full Transaction (end-to-end) | ~520ms |
+| Dashboard Load Time | 1.85 seconds |
+| Language Comprehension | 85-92% across all languages |
 
 ---
 
 ## Troubleshooting
 
-### Common Issues
+**404 Not Found on /api/voice**
 
-#### 404 Not Found on /api/voice
+Check that `index.routes.js` contains:
 
-**Problem**: Twilio shows 404 error  
-**Solution**: Check `index.routes.js` has `router.use('/api/voice', voiceRoutes)`
+```js
+router.use('/api/voice', voiceRoutes)
+```
 
-#### 500 Internal Server Error
+**500 Internal Server Error on voice calls**
 
-**Problem**: Voice controller crashes  
-**Solution**: Check Firebase service account key is valid and Firestore is initialized
+Check that `serviceAccountKey.json` is valid and Firestore is correctly initialized.
 
-#### Frontend Can't Connect to Backend
+**Frontend CORS error**
 
-**Problem**: CORS errors in browser console  
-**Solution**: Update `app.js` CORS configuration to include frontend URL
+Update CORS configuration in `app.js`:
 
-#### Ration Card Stays "Used" Forever
+```js
+cors({ origin: 'http://localhost:5173' })
+```
 
-**Problem**: 30-day logic not working  
-**Solution**: Verify `rationCard.model.js` has correct date calculation logic
+**Ration card stays Used permanently**
 
-#### Dashboard Not Updating
+Check the 30-day date calculation logic in `rationCard.model.js`.
 
-**Problem**: Changes don't reflect  
-**Solution**: Check 10-second polling in `useRationCards.js` and `useOrders.js`
+**Dashboard not auto-updating**
+
+Verify the 10-second polling interval in `useRationCards.js` and `useOrders.js`.
 
 ---
 
-## Future Enhancements
+## Roadmap
 
-### Immediate (1-2 weeks)
+**Immediate (1-2 weeks)**
 - JWT authentication for admin dashboard
-- Automated test suite (Jest, React Testing Library)
+- Automated test suite with Jest and React Testing Library
 - Redis for distributed session storage
 
-### Short-term (1-3 months)
+**Short-term (1-3 months)**
 - Native language TTS engines
 - SMS order confirmations
 - Payment integration for non-subsidized seeds
 - Analytics dashboard with charts
 
-### Long-term (3-6+ months)
+**Long-term (3-6+ months)**
 - Mobile application
 - Delivery tracking integration
-- Advanced NLP for conversational interface
+- Advanced NLP conversational interface
 - ML-based seed recommendations
-- Blockchain for supply chain traceability
+- Blockchain supply chain traceability
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please follow these guidelines:
-
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'Add your feature'`
+4. Push to the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
-
-### Code Style
-
-- Use ESLint for JavaScript linting
-- Follow Airbnb JavaScript style guide
-- Write meaningful commit messages
-- Add comments for complex logic
-- Update documentation for new features
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-## Contact
-
-**Project Maintainer**: SpringMan-Sonic  
-**GitHub**: https://github.com/SpringMan-Sonic
-
----
-
-## Acknowledgments
-
-- Twilio for voice platform APIs
-- Firebase for managed database services
-- React community for excellent documentation
-- All contributors and testers
-
----
-
-## Project Status
-
-**Current Version**: 1.0.0  
-**Status**: Active Development  
-**Last Updated**: April 2026
-
----
-
-## References
-
-For academic citation:
+## Academic Reference
 
 ```
 Agrokratis: Voice-Based Agricultural Seed Distribution System
 Developed as B.Tech Final Year Project
 Anil Neerukonda Institute of Technology and Sciences
-Visakhapatnam, India
-2026
+Visakhapatnam, India — 2026
 ```
 
 ---
 
-**Built with care for farmers who need it most.**
+Built with care for farmers who need it most.
+
+Made by [SpringMan-Sonic](https://github.com/SpringMan-Sonic)
