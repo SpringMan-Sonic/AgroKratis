@@ -1,4 +1,6 @@
-# Agrokratis — Voice-Based Agricultural Seed Distribution System
+# Agrokratis
+
+### Voice-Based Agricultural Seed Distribution System
 
 A comprehensive voice-based telephony system enabling rural Indian farmers to order government-subsidized seeds through simple phone calls in their native languages.
 
@@ -77,16 +79,19 @@ Farmers interact in their native language, complete an order in under 60 seconds
 ### Database Collections
 
 **seeds** — Seed inventory
+
 ```
 id | name | nameLocal (te / hi / ta / ml / kn) | costPerKg | stock
 ```
 
 **orders** — Transaction history
+
 ```
 id | date | seedName | amount | rationCard | aadhaar | language
 ```
 
 **rationcards** — Eligibility tracking
+
 ```
 number | used (boolean) | lastUsed (timestamp)
 ```
@@ -136,27 +141,23 @@ npm install
 
 ### 5. Seed the Firestore Collections
 
-Create the following collections in the Firebase Console:
-
 **seeds** — Example document
 
-```
-Document ID: seed_001
+```json
 {
-  name: "Rice",
-  nameLocal: { te: "Vadlu", hi: "Chawal", ta: "Arisi", ml: "Ari", kn: "Akki" },
-  costPerKg: 50,
-  stock: 5000
+  "name": "Rice",
+  "nameLocal": { "te": "Vadlu", "hi": "Chawal", "ta": "Arisi", "ml": "Ari", "kn": "Akki" },
+  "costPerKg": 50,
+  "stock": 5000
 }
 ```
 
 **rationcards** — Add documents RC0001 through RC0010
 
-```
-Document ID: RC0001
+```json
 {
-  used: false,
-  lastUsed: null
+  "used": false,
+  "lastUsed": null
 }
 ```
 
@@ -183,12 +184,10 @@ VITE_API_URL=http://localhost:3001/api
 
 ### Twilio Webhook Configuration
 
-In your Twilio Console, configure your phone number with the following webhooks:
-
 | Event | URL | Method |
 |-------|-----|--------|
-| Voice | `https://<your-ngrok-url>/api/voice` | HTTP POST |
-| Status Callback | `https://<your-ngrok-url>/api/voice/hangup` | HTTP POST |
+| Voice | `https://your-ngrok-url/api/voice` | HTTP POST |
+| Status Callback | `https://your-ngrok-url/api/voice/hangup` | HTTP POST |
 
 ---
 
@@ -207,15 +206,13 @@ cd frontend && npm run dev
 ngrok http 3001
 ```
 
-Copy the HTTPS URL from ngrok and update your Twilio webhook configuration.
-
 ### Farmer Workflow (Voice)
 
 ```
 Call Twilio number
-  └── Select language          (Press 1–5)
+  └── Select language          (Press 1-5)
         └── Enter ration card  (4 digits)
-              └── Select seed  (Press 1–3)
+              └── Select seed  (Press 1-3)
                     └── Enter quantity   (in grams)
                           └── Enter Aadhaar  (12 digits)
                                 └── Order confirmed
@@ -240,7 +237,7 @@ Open `http://localhost:5173` and navigate between:
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/seeds` | Retrieve all seeds |
-| POST | `/seeds` | Create a seed — body: `{ name, nameLocal, costPerKg, stock }` |
+| POST | `/seeds` | Create a seed |
 | PUT | `/seeds/:id` | Update a seed |
 | DELETE | `/seeds/:id` | Delete a seed |
 
@@ -256,14 +253,14 @@ Open `http://localhost:5173` and navigate between:
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/rationcards` | Retrieve all cards with computed status |
-| GET | `/rationcards/:number` | Check single card — returns `{ canOrder, daysRemaining }` |
+| GET | `/rationcards/:number` | Check single card eligibility |
 
 ### Voice Webhooks (Twilio)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/voice` | Handle incoming call, returns TwiML |
-| POST | `/api/voice/gather` | Process DTMF or speech input, returns TwiML |
+| POST | `/api/voice/gather` | Process DTMF or speech input |
 | POST | `/api/voice/hangup` | Clean up session on call end |
 
 ---
@@ -339,13 +336,13 @@ Based on testing with 45 simulated calls:
 |--------|--------|
 | Voice Interaction Success Rate | 88% |
 | DTMF Input Accuracy | 100% |
-| Speech Recognition Accuracy | 70–92% |
+| Speech Recognition Accuracy | 70-92% |
 | Average Order Completion Time | ~66 seconds |
-| Database Read Operations | 58–95ms average |
-| Database Write Operations | 105–135ms average |
+| Database Read Operations | 58-95ms average |
+| Database Write Operations | 105-135ms average |
 | Full Transaction (end-to-end) | ~520ms |
 | Dashboard Load Time | 1.85 seconds |
-| Language Comprehension | 85–92% across all languages |
+| Language Comprehension | 85-92% across all languages |
 
 ---
 
@@ -353,23 +350,25 @@ Based on testing with 45 simulated calls:
 
 **404 Not Found on /api/voice**
 
-Verify that `index.routes.js` contains:
+Check that `index.routes.js` contains:
+
 ```js
 router.use('/api/voice', voiceRoutes)
 ```
 
 **500 Internal Server Error on voice calls**
 
-Check that `serviceAccountKey.json` is valid and Firestore is correctly initialized in `firebase.config.js`.
+Check that `serviceAccountKey.json` is valid and Firestore is correctly initialized.
 
 **Frontend CORS error**
 
-Update the CORS configuration in `app.js` to include your frontend URL:
+Update CORS configuration in `app.js`:
+
 ```js
 cors({ origin: 'http://localhost:5173' })
 ```
 
-**Ration card stays "Used" permanently**
+**Ration card stays Used permanently**
 
 Check the 30-day date calculation logic in `rationCard.model.js`.
 
@@ -381,18 +380,18 @@ Verify the 10-second polling interval in `useRationCards.js` and `useOrders.js`.
 
 ## Roadmap
 
-**Immediate (1–2 weeks)**
+**Immediate (1-2 weeks)**
 - JWT authentication for admin dashboard
 - Automated test suite with Jest and React Testing Library
 - Redis for distributed session storage
 
-**Short-term (1–3 months)**
+**Short-term (1-3 months)**
 - Native language TTS engines
 - SMS order confirmations
 - Payment integration for non-subsidized seeds
 - Analytics dashboard with charts
 
-**Long-term (3–6+ months)**
+**Long-term (3-6+ months)**
 - Mobile application
 - Delivery tracking integration
 - Advanced NLP conversational interface
@@ -408,8 +407,6 @@ Verify the 10-second polling interval in `useRationCards.js` and `useOrders.js`.
 3. Commit your changes: `git commit -m 'Add your feature'`
 4. Push to the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
-
-Please follow the [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) and add comments for complex logic.
 
 ---
 
